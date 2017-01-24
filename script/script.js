@@ -61,12 +61,17 @@ function insertFinishedValue(value, finished, idValue) {
  }).css({
   float: "left"
  });
- if (finished === true) {
-  $(checkBox).attr("checked", "checked");
- }
+
  var div = $("<div>").attr({
   class: "value col-md-6"
  });
+ if (finished === true) {
+  $(checkBox).attr("checked", "checked");
+$(div).css({
+  "text-decoration": "line-through",
+    "font-style": "oblique"
+})
+ }
  $(div).text(value);
  $(parentDiv).append(checkBox);
  $(parentDiv).append(div);
@@ -79,4 +84,19 @@ function changeValues(event) {
  store.transact("todo", function (values) {
   values[id].finished = !currentValue;
  });
+ if(!currentValue===true)
+ {
+$("#"+id+" div").css({
+  "text-decoration": "line-through",
+    "font-style": "oblique"
+});
+ }
+ else {
+   {
+     $("#"+id+" div").css({
+       "text-decoration": "none",
+         "font-style": "inherit"
+     })
+   }
+ }
 }
