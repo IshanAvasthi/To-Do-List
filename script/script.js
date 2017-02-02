@@ -43,34 +43,36 @@ function printValues() {
  for (loop = 0; loop < length; loop++) {
   insertFinishedValue(values[loop + 1].name, values[loop + 1].finished, loop + 1);
  }
- $("body").on("click", "input.inputCheckBox", function (event) {
+ $("body").on("click", "input.taskCheckBox", function (event) {
   changeValues(event);
+ });
+ $("body").on("keydown", "textarea.taskData", function (event) {
+  checkForChangeInHeight(event);
  });
 }
 
 function insertFinishedValue(value, finished, idValue) {
  console.log(idValue)
  var parentDiv = $("<div>").attr({
-  "class": "Unfinished col-md-12",
+  "class": "tasks col-md-12",
   id: idValue,
  });
  $("#displayItems").append(parentDiv);
  var checkBox = $("<input>").attr({
   type: "checkBox",
-  class: "inputCheckBox"
+  class: "taskCheckBox"
  }).css({
-  float: "left"
+  "margin-top": "17px",
+  "margin-left": "-12px"
  });
 
- var div = $("<div>").attr({
-  class: "value col-md-6"
+ var div = $("<textarea>").attr({
+  class: "taskData col-md-6 form-control",
+  "contenteditable": true
  });
  if (finished === true) {
   $(checkBox).attr("checked", "checked");
-$(div).css({
-  "text-decoration": "line-through",
-    "font-style": "oblique"
-})
+  $(div).addClass("taskFinished");
  }
  $(div).text(value);
  $(parentDiv).append(checkBox);
@@ -84,19 +86,30 @@ function changeValues(event) {
  store.transact("todo", function (values) {
   values[id].finished = !currentValue;
  });
- if(!currentValue===true)
- {
-$("#"+id+" div").css({
-  "text-decoration": "line-through",
-    "font-style": "oblique"
-});
+ if (!currentValue === true) {
+  $("#" + id + " textarea").addClass("taskFinished").removeClass("taskunFinished");
+ } else {
+  {
+   $("#" + id + " textarea").addClass("taskunFinished").removeClass("taskFinished");
+  }
  }
- else {
-   {
-     $("#"+id+" div").css({
-       "text-decoration": "none",
-         "font-style": "inherit"
-     })
-   }
- }
+}
+
+function checkForChangeInHeight(event) {
+ var parentId = ($(event)[0].target.offsetParent.id);
+ var currentHeight=$("#" + parentId + " textarea").css("height");
+ currentHeight=parseFloat(currentHeight);
+
+ $("#" + parentId + " textarea").css("height", "10px")
+ var height = (document.getElementById(parentId).lastChild.scrollHeight)
+if(currentHeight<height){
+ $("#" + parentId + " textarea").css({
+  "height": height+4
+})}
+else {
+$("#" + parentId + " textarea").css("height",currentHeight)
+
+}
+
+
 }
